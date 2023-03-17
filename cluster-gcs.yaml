@@ -3,6 +3,8 @@ kind: PostgresCluster
 metadata:
   name: cluster-gcs
   namespace: postgres-operator
+  annotations:
+    postgres-operator.crunchydata.com/pgbackrest-backup: "Ven 17 Mar 2023 09:52:10 CET"
 spec:
   backups:
     pgbackrest:
