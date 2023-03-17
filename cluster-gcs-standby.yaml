@@ -9,6 +9,8 @@ spec:
     - dataVolumeClaimSpec: { accessModes: [ReadWriteOnce], resources: { requests: { storage: 1Gi } } }
   backups:
     pgbackrest:
+      global:
+        repo1-path: /pgbackrest/postgres-operator/cluster-gcs/repo1
       configuration:
       - secret:
           # already created in local cluster
