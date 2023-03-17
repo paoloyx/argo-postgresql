@@ -1,0 +1,38 @@
+apiVersion: postgres-operator.crunchydata.com/v1beta1
+kind: PostgresCluster
+metadata:
+  name: cluster-gcs-latest-pitr
+spec:
+  dataSource:
+    postgresCluster:
+      clusterName: cluster-gcs
+      repoName: repo1
+      options:
+      - --type=default
+  image: registry.developers.crunchydata.com/crunchydata/crunchy-postgres:ubi8-14.7-0
+  postgresVersion: 14
+  instances:
+    - dataVolumeClaimSpec:
+        accessModes:
+        - "ReadWriteOnce"
+        resources:
+          requests:
+            storage: 1Gi
+  backups:
+    pgbackrest:
+      configuration:
+      - secret:
+          # already created in local cluster
+          name: pgo-gcs-creds
+      global:
+        repo1-path: /pgbackrest/postgres-operator/cluster-gcs/repo1
+      image: registry.developers.crunchydata.com/crunchydata/crunchy-pgbackrest:ubi8-2.41-4
+      repos:
+      - name: repo1
+        volume:
+          volumeClaimSpec:
+            accessModes:
+            - "ReadWriteOnce"
+            resources:
+              requests:
+                storage: 1Gi
