@@ -4,7 +4,7 @@ metadata:
   name: cluster-gcs
   namespace: postgres-operator
   annotations:
-    postgres-operator.crunchydata.com/pgbackrest-restore: id1
+    postgres-operator.crunchydata.com/pgbackrest-restore: restore-17-03-2023
 spec:
   backups:
     pgbackrest:
