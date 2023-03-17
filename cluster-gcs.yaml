@@ -6,6 +6,7 @@ metadata:
   annotations:
     postgres-operator.crunchydata.com/allow-upgrade: "cluster-gcs-upgrade"
 spec:
+  shutdown: true
   backups:
     pgbackrest:
       configuration:
