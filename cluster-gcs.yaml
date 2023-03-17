@@ -4,7 +4,7 @@ metadata:
   name: cluster-gcs
   namespace: postgres-operator
   annotations:
-    postgres-operator.crunchydata.com/allow-upgrade="cluster-gcs-upgrade"
+    postgres-operator.crunchydata.com/allow-upgrade: "cluster-gcs-upgrade"
 spec:
   backups:
     pgbackrest:
