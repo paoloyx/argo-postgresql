@@ -1,0 +1,53 @@
+apiVersion: postgres-operator.crunchydata.com/v1beta1
+kind: PostgresCluster
+metadata:
+  name: cluster-gcs
+  namespace: postgres-operator
+spec:
+  backups:
+    pgbackrest:
+      configuration:
+      - secret:
+          # already created in local cluster
+          name: pgo-gcs-creds
+      global:
+        backup-repo-path: /pgbackrest/postgres-operator/cluster-gcs/backup-repo
+      image: registry.developers.crunchydata.com/crunchydata/crunchy-pgbackrest:ubi8-2.41-4
+      # For one-shot full backups
+      # Backup is triggered by an annotation i.e.
+      # postgres-operator.crunchydata.com/pgbackrest-backup="$(date)"
+      manual:
+        options:
+        - --type=full
+        repoName: backup-repo
+      # The scheduled backup
+      repos:
+      - gcs:
+          bucket: postgresql-operators-backup-test
+        name: backup-repo
+        schedules:
+          differential: 0/5 * * * *
+          full: 0 1 * * *
+      # For in-place restores
+      # Restore is triggered by an annotation i.e.
+      # postgres-operator.crunchydata.com/pgbackrest-restore=id1
+      restore:
+        # Must be set to "true" to restore
+        enabled: false
+        options:
+        - --type=time
+        # This is for PITR recovery
+        #- --target="2023-03-16 17:45:00+01"
+        repoName: backup-repo
+  image: registry.developers.crunchydata.com/crunchydata/crunchy-postgres:ubi8-14.7-0
+  instances:
+  - dataVolumeClaimSpec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: 1Gi
+    name: ""
+    replicas: 1
+  port: 5432
+  postgresVersion: 14
